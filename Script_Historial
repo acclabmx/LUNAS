@@ -1,0 +1,118 @@
+function recordHistory() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet(); //Abrimos la App
+  var base = ss.getSheetByName("Base de Datos"); // Definimos la tabla base
+  var historial = ss.getSheetByName("Historial"); //Definimos la tabla historial
+
+  var Avals_base = base.getRange("A1:A").getValues(); 
+  var Alast_base = Avals_base.filter(String).length - 1; // Estas dos filas cuentan el número de reglones activos en la base
+
+  var source = base.getRange(2,68,Alast_base,22); 
+  var values = source.getValues();  // Se extraen los datos de la base
+
+// Se crea el dato de fecha con el mismo número de filas que "values"
+ 
+  var dates = []; 
+
+    for(var i = 0; i<values.length; i++){
+     dates[i] =[new Date()] 
+     
+    } 
+
+  var Avals_historial = historial.getRange("A1:A").getValues();
+  var Alast_historial = Avals_historial.filter(String).length +1;  // Estas dos filas cuentan el número de reglones activos en el historial para saber donde inertar el nuevo historial
+
+  historial.getRange(Alast_historial,1,values.length,22).setValues(values);
+  historial.getRange(Alast_historial,23,values.length,1).setValues(dates); // Estas lineas pegan el nuevo historial semanal
+
+  // Se borran los valores de las usuarias con cita abierta ya que esos no generan historial
+
+  var rows = historial.getDataRange();
+  var numRows = rows.getNumRows();
+  var values_h = rows.getValues();
+
+  var rowsDeleted = 0;
+  for (var i = 0; i <= numRows - 1; i++) {
+    var row = values_h[i];
+    if (row[4] == true) {
+      historial.deleteRow((parseInt(i)+1) - rowsDeleted);
+      rowsDeleted++;
+    }
+  }
+ 
+  Logger.log(Alast_base)
+  Logger.log(values.length)
+  Logger.log(Alast_historial)
+  Logger.log(dates)
+  Logger.log(values)
+
+  var range = historial.getRange("A2:AI");
+  range.sort(1);        // Se ordena por nombre
+
+  // Por último reseteamos las columnas que se deben seleccionar cada semana
+
+  var psi = base.getRange("BV2:BV");
+  var values = psi.getValues();
+
+    for (var i = 0; i < values.length; i++) {
+      for (var j = 0; j < values[i].length; j++) {
+        if (values[i][j] == true) {
+          values[i][j] = false; // Modified
+        }
+      }
+    }
+  psi.setValues(values); // Added
+
+  var as_jur = base.getRange("BX2:BX");
+  var values = as_jur.getValues();
+
+    for (var i = 0; i < values.length; i++) {
+      for (var j = 0; j < values[i].length; j++) {
+        if (values[i][j] == true) {
+          values[i][j] = false; // Modified
+        }
+      }
+    }
+  as_jur.setValues(values); // Added
+
+  var ac_jur = base.getRange("BZ2:BZ");
+  var values = ac_jur.getValues();
+
+    for (var i = 0; i < values.length; i++) {
+      for (var j = 0; j < values[i].length; j++) {
+        if (values[i][j] == true) {
+          values[i][j] = false; // Modified
+        }
+      }
+    }
+  ac_jur.setValues(values); // Added
+
+  var vis_dom = base.getRange("CB2:CB");
+  var values = vis_dom.getValues();
+
+    for (var i = 0; i < values.length; i++) {
+      for (var j = 0; j < values[i].length; j++) {
+        if (values[i][j] == true) {
+          values[i][j] = false; // Modified
+        }
+      }
+    }
+  vis_dom.setValues(values); // Added
+
+  var riesgo =  base.getRange("CH2:CH");
+  var values = riesgo.getValues();
+
+    for (var i = 0; i < values.length; i++) {
+      for (var j = 0; j < values[i].length; j++) {
+        if (values[i][j] == true) {
+          values[i][j] = false; // Modified
+        }
+      }
+    }
+  riesgo.setValues(values); // Added
+
+
+};
+
+
+
